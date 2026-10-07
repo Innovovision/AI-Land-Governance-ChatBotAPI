@@ -16,28 +16,18 @@ intents:
 entities:
 - language
 slots:
-  mauza:
+  district:
     type: text
     influence_conversation: false
     mappings:
     - type: from_text
       conditions:
       - active_loop: jamabandi_form
-        requested_slot: mauza
+        requested_slot: district
       - active_loop: lpc_form
-        requested_slot: mauza
+        requested_slot: district
       - active_loop: grievance_form
-        requested_slot: mauza
-  khata:
-    type: text
-    influence_conversation: false
-    mappings:
-    - type: from_text
-      conditions:
-      - active_loop: jamabandi_form
-        requested_slot: khata
-      - active_loop: lpc_form
-        requested_slot: khata
+        requested_slot: district
   khesra:
     type: text
     influence_conversation: false
@@ -56,10 +46,16 @@ slots:
       conditions:
       - active_loop: jamabandi_form
         requested_slot: owner_name
-      - active_loop: lpc_form
-        requested_slot: owner_name
       - active_loop: grievance_form
         requested_slot: owner_name
+  plot_no:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: grievance_form
+        requested_slot: plot_no
   case_no:
     type: text
     influence_conversation: false
@@ -68,6 +64,14 @@ slots:
       conditions:
       - active_loop: mutation_form
         requested_slot: case_no
+  prm_case_id:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: parimarjan_form
+        requested_slot: prm_case_id
   grievance_text:
     type: text
     influence_conversation: false
@@ -97,8 +101,7 @@ slots:
 forms:
   jamabandi_form:
     required_slots:
-    - mauza
-    - khata
+    - district
     - khesra
     - owner_name
   mutation_form:
@@ -106,15 +109,17 @@ forms:
     - case_no
   lpc_form:
     required_slots:
-    - owner_name
-    - mauza
-    - khata
+    - district
     - khesra
   grievance_form:
     required_slots:
     - owner_name
-    - mauza
+    - district
+    - plot_no
     - grievance_text
+  parimarjan_form:
+    required_slots:
+    - prm_case_id
   assistant_form:
     required_slots:
     - question
@@ -141,7 +146,7 @@ responses:
       payload: /lpc_check
     - title: 4. Lodge grievance / शिकायत दर्ज करें
       payload: /lodge_grievance
-    - title: 5. Correction (Parimarjan) / परिमार्जन
+    - title: 5. Parimarjan status / परिमार्जन स्थिति
       payload: /parimarjan_help
     - title: 6. Ask a question / प्रश्न पूछें
       payload: /ask_assistant
@@ -151,20 +156,6 @@ responses:
       payload: /set_language{"language":"en"}
   - text: 'Please choose a service:'
     buttons: *id001
-  utter_ask_mauza:
-  - condition:
-    - type: slot
-      name: language
-      value: hi
-    text: भूमि किस मौजा में है?
-  - text: Which mauza (village) is the land in?
-  utter_ask_khata:
-  - condition:
-    - type: slot
-      name: language
-      value: hi
-    text: खाता संख्या क्या है?
-  - text: What is the khata number?
   utter_ask_khesra:
   - condition:
     - type: slot
@@ -184,8 +175,8 @@ responses:
     - type: slot
       name: language
       value: hi
-    text: कृपया दाखिल-खारिज वाद संख्या लिखें (जैसे MUT/2025-26/0101)।
-  - text: Please enter your mutation case number (e.g. MUT/2025-26/0101).
+    text: कृपया दाखिल-खारिज वाद संख्या लिखें (जैसे MUT/2023/NLD/6634)।
+  - text: Please enter your mutation case number (e.g. MUT/2023/NLD/6634).
   utter_ask_grievance_text:
   - condition:
     - type: slot
@@ -238,9 +229,31 @@ responses:
       value: hi
     text: धन्यवाद। नमस्ते!
   - text: Thank you. Goodbye!
+  utter_ask_district:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: भूमि किस जिले में है? (जैसे पटना, नालंदा, गया)
+  - text: Which district is the land in? (e.g. Patna, Nalanda, Gaya)
+  utter_ask_plot_no:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: खेसरा संख्या लिखें, पता न हो तो 0 लिखें।
+  - text: Enter the khesra number, or 0 if you don't know it.
+  utter_ask_prm_case_id:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: कृपया परिमार्जन आवेदन संख्या लिखें (जैसे PRM/2025/0008)।
+  - text: Please enter your Parimarjan application ID (e.g. PRM/2025/0008).
 actions:
 - action_submit_jamabandi
 - action_submit_mutation
 - action_submit_lpc
 - action_submit_grievance
+- action_submit_parimarjan
 - action_submit_assistant

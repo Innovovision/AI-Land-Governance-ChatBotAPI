@@ -7,11 +7,11 @@ separate from module 1 (Citizen Assistant, free-text Q&A inside the main platfor
 
 | # | Service | What happens |
 |---|---------|--------------|
-| 1 | Check Jamabandi | Asks mauza, khata, khesra, name → platform `document-verification` |
-| 2 | Mutation status | Asks case number → platform `mutation-tracker` |
-| 3 | LPC eligibility | Asks name and plot → platform `lpc/advise` |
-| 4 | Lodge grievance | Asks name, mauza, complaint → platform `grievance` |
-| 5 | Parimarjan help | Static guidance |
+| 1 | Check Jamabandi | Asks district, khesra, name → `document-verification/jamabandi/check-owner` |
+| 2 | Mutation status | Asks case number (e.g. MUT/2023/NLD/6634) → `mutation-tracker` 4-stage pipeline and delay |
+| 3 | LPC eligibility | Asks district and khesra → `lpc/assess` (eligible, or the blocking reasons and next steps) |
+| 4 | Lodge grievance | Asks name, district, khesra (0 if unknown), complaint → `grievance/analyze` (type, priority, routed officer, Hindi acknowledgment) |
+| 5 | Parimarjan status | Explains Parimarjan, asks the application ID (e.g. PRM/2025/0008) → `parimarjan/cases/{id}/explain` |
 | 6 | Ask a question | Hands free text to platform module 1 (Citizen Assistant) |
 
 Hindi and English are supported (menu buttons switch the `language` slot). Typing the option
@@ -26,6 +26,16 @@ actions/platform_client.py             HTTP client + message formatting for the 
 gateway/app.py                         FastAPI "ChatBot API": POST /api/chat → Rasa REST channel
 tests/                                 domain consistency, client and gateway tests (no Rasa needed)
 ```
+
+## Demo values (from the platform's sample data)
+
+- Jamabandi: Patna, khesra 112, Ram Kumar Sinha (match) or any other name (mismatch)
+- Mutation: MUT/2023/NLD/6634, DISP/2023/PTA/0041 (highly delayed), MUT/2023/MUZ/7712
+- LPC: Darbhanga 332 (eligible), Muzaffarpur 502 (blocked: anomaly flag)
+- Parimarjan: PRM/2025/0001 to PRM/2025/0018
+
+The bot calls the platform as role `citizen` using dev headers (platform `ALLOW_DEV_HEADERS=true`).
+Set `PLATFORM_TOKEN` to a JWT from `POST /api/auth/login` to use token auth instead.
 
 ## Run
 

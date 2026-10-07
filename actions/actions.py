@@ -7,7 +7,7 @@ from rasa_sdk.events import SlotSet
 from rasa_sdk.executor import CollectingDispatcher
 
 from actions.platform_client import (PlatformClient, format_grievance, format_jamabandi, format_lpc,
-                                     format_mutation)
+                                     format_mutation, format_parimarjan)
 
 client = PlatformClient()
 
@@ -29,13 +29,13 @@ class _Submit(Action):
 
 
 class ActionSubmitJamabandi(_Submit):
-    slots = ["mauza", "khata", "khesra", "owner_name"]
+    slots = ["district", "khesra", "owner_name"]
 
     def name(self):
         return "action_submit_jamabandi"
 
     def call(self, v, lang):
-        return format_jamabandi(client.verify_jamabandi(v["mauza"], v["khata"], v["khesra"], v["owner_name"]), lang)
+        return format_jamabandi(client.check_jamabandi(v["district"], v["khesra"], v["owner_name"]), lang)
 
 
 class ActionSubmitMutation(_Submit):
@@ -49,23 +49,34 @@ class ActionSubmitMutation(_Submit):
 
 
 class ActionSubmitLpc(_Submit):
-    slots = ["owner_name", "mauza", "khata", "khesra"]
+    slots = ["district", "khesra"]
 
     def name(self):
         return "action_submit_lpc"
 
     def call(self, v, lang):
-        return format_lpc(client.lpc_advise(v["owner_name"], v["mauza"], v["khata"], v["khesra"]), lang)
+        return format_lpc(client.lpc_assess(v["district"], v["khesra"]), lang)
 
 
 class ActionSubmitGrievance(_Submit):
-    slots = ["owner_name", "mauza", "grievance_text"]
+    slots = ["owner_name", "district", "plot_no", "grievance_text"]
 
     def name(self):
         return "action_submit_grievance"
 
     def call(self, v, lang):
-        return format_grievance(client.lodge_grievance(v["owner_name"], v["mauza"], v["grievance_text"]), lang)
+        return format_grievance(client.lodge_grievance(v["owner_name"], v["district"], v["plot_no"],
+                                                       v["grievance_text"]), lang)
+
+
+class ActionSubmitParimarjan(_Submit):
+    slots = ["prm_case_id"]
+
+    def name(self):
+        return "action_submit_parimarjan"
+
+    def call(self, v, lang):
+        return format_parimarjan(client.parimarjan_status(v["prm_case_id"]), lang)
 
 
 class ActionSubmitAssistant(_Submit):

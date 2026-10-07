@@ -28,11 +28,6 @@ rules:
   - action: utter_default
   - action: utter_main_menu
 
-- rule: Parimarjan help
-  steps:
-  - intent: parimarjan_help
-  - action: utter_parimarjan_help
-  - action: utter_main_menu
 
 # --- Forms: activate ---
 - rule: Activate jamabandi form
@@ -55,6 +50,12 @@ rules:
   - intent: lodge_grievance
   - action: grievance_form
   - active_loop: grievance_form
+- rule: Activate Parimarjan form
+  steps:
+  - intent: parimarjan_help
+  - action: utter_parimarjan_help
+  - action: parimarjan_form
+  - active_loop: parimarjan_form
 - rule: Activate assistant form
   steps:
   - intent: ask_assistant
@@ -101,6 +102,16 @@ rules:
   - slot_was_set:
     - requested_slot: null
   - action: action_submit_grievance
+  - action: utter_main_menu
+- rule: Submit Parimarjan form
+  condition:
+  - active_loop: parimarjan_form
+  steps:
+  - action: parimarjan_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_submit_parimarjan
   - action: utter_main_menu
 - rule: Submit assistant form
   condition:

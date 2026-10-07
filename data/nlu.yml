@@ -71,6 +71,9 @@ nlu:
     - my name is wrong in record
     - परिमार्जन
     - galti sudhar
+    - parimarjan status
+    - where is my correction application
+    - परिमार्जन की स्थिति
 - intent: ask_assistant
   examples: |
     - 6
