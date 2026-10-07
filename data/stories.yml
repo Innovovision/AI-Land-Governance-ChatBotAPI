@@ -1,0 +1,15 @@
+version: "3.1"
+stories:
+- story: Check jamabandi then leave
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - action: utter_main_menu
+  - intent: check_jamabandi
+  - action: jamabandi_form
+  - active_loop: jamabandi_form
+  - active_loop: null
+  - action: action_submit_jamabandi
+  - action: utter_main_menu
+  - intent: goodbye
+  - action: utter_goodbye

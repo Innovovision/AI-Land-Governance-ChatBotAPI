@@ -1,0 +1,246 @@
+version: '3.1'
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+intents:
+- greet
+- goodbye
+- menu
+- set_language
+- check_jamabandi
+- mutation_status
+- lpc_check
+- lodge_grievance
+- parimarjan_help
+- ask_assistant
+entities:
+- language
+slots:
+  mauza:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: jamabandi_form
+        requested_slot: mauza
+      - active_loop: lpc_form
+        requested_slot: mauza
+      - active_loop: grievance_form
+        requested_slot: mauza
+  khata:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: jamabandi_form
+        requested_slot: khata
+      - active_loop: lpc_form
+        requested_slot: khata
+  khesra:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: jamabandi_form
+        requested_slot: khesra
+      - active_loop: lpc_form
+        requested_slot: khesra
+  owner_name:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: jamabandi_form
+        requested_slot: owner_name
+      - active_loop: lpc_form
+        requested_slot: owner_name
+      - active_loop: grievance_form
+        requested_slot: owner_name
+  case_no:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: mutation_form
+        requested_slot: case_no
+  grievance_text:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: grievance_form
+        requested_slot: grievance_text
+  question:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: assistant_form
+        requested_slot: question
+  language:
+    type: categorical
+    values:
+    - en
+    - hi
+    initial_value: en
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: language
+forms:
+  jamabandi_form:
+    required_slots:
+    - mauza
+    - khata
+    - khesra
+    - owner_name
+  mutation_form:
+    required_slots:
+    - case_no
+  lpc_form:
+    required_slots:
+    - owner_name
+    - mauza
+    - khata
+    - khesra
+  grievance_form:
+    required_slots:
+    - owner_name
+    - mauza
+    - grievance_text
+  assistant_form:
+    required_slots:
+    - question
+responses:
+  utter_greet:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: नमस्ते! मैं बिहार भूमि अभिलेख सहायक हूँ।
+  - text: Namaste! I am the Bihar land records assistant.
+  utter_main_menu:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: 'कृपया एक सेवा चुनें:'
+    buttons: &id001
+    - title: 1. Check Jamabandi / जमाबंदी जाँच
+      payload: /check_jamabandi
+    - title: 2. Mutation status / दाखिल-खारिज स्थिति
+      payload: /mutation_status
+    - title: 3. LPC eligibility / एलपीसी पात्रता
+      payload: /lpc_check
+    - title: 4. Lodge grievance / शिकायत दर्ज करें
+      payload: /lodge_grievance
+    - title: 5. Correction (Parimarjan) / परिमार्जन
+      payload: /parimarjan_help
+    - title: 6. Ask a question / प्रश्न पूछें
+      payload: /ask_assistant
+    - title: हिंदी
+      payload: /set_language{"language":"hi"}
+    - title: English
+      payload: /set_language{"language":"en"}
+  - text: 'Please choose a service:'
+    buttons: *id001
+  utter_ask_mauza:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: भूमि किस मौजा में है?
+  - text: Which mauza (village) is the land in?
+  utter_ask_khata:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: खाता संख्या क्या है?
+  - text: What is the khata number?
+  utter_ask_khesra:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: खेसरा (प्लॉट) संख्या क्या है?
+  - text: What is the khesra (plot) number?
+  utter_ask_owner_name:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: अभिलेख के अनुसार आपका पूरा नाम क्या है?
+  - text: What is your full name as in the record?
+  utter_ask_case_no:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: कृपया दाखिल-खारिज वाद संख्या लिखें (जैसे MUT/2025-26/0101)।
+  - text: Please enter your mutation case number (e.g. MUT/2025-26/0101).
+  utter_ask_grievance_text:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: कृपया अपनी शिकायत लिखें।
+  - text: Please describe your grievance.
+  utter_ask_question:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: आप क्या जानना चाहते हैं?
+  - text: What would you like to know?
+  utter_parimarjan_help:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: परिमार्जन से ऑनलाइन जमाबंदी की त्रुटियाँ (नाम, पिता का नाम, रकबा, खाता/खेसरा, हिस्सा या छूटा अभिलेख) ठीक
+      होती हैं। जमाबंदी की प्रति और सहायक कागजात के साथ ऑनलाइन आवेदन करें; अंचल अधिकारी जाँच कर सुधार करते हैं।
+  - text: Parimarjan corrects errors in the online Jamabandi (name, father's name, area, khata/khesra, share, or
+      a missing record). Apply online with the Jamabandi copy and supporting documents; the Circle Officer verifies
+      and corrects it.
+  utter_language_set:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: भाषा हिंदी कर दी गई है।
+  - text: Language set to English.
+  utter_service_down:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: सेवा अभी उपलब्ध नहीं है। कृपया बाद में प्रयास करें।
+  - text: The service is not reachable right now. Please try again later.
+  utter_default:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: क्षमा करें, समझ नहीं पाया। कृपया मेनू से विकल्प चुनें।
+  - text: Sorry, I didn't get that. Please pick an option from the menu.
+  utter_goodbye:
+  - condition:
+    - type: slot
+      name: language
+      value: hi
+    text: धन्यवाद। नमस्ते!
+  - text: Thank you. Goodbye!
+actions:
+- action_submit_jamabandi
+- action_submit_mutation
+- action_submit_lpc
+- action_submit_grievance
+- action_submit_assistant

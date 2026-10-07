@@ -1,0 +1,81 @@
+version: "3.1"
+nlu:
+- intent: greet
+  examples: |
+    - hi
+    - hello
+    - namaste
+    - namaskar
+    - नमस्ते
+    - pranam
+    - good morning
+- intent: goodbye
+  examples: |
+    - bye
+    - thank you bye
+    - dhanyavad
+    - धन्यवाद
+    - exit
+- intent: menu
+  examples: |
+    - menu
+    - main menu
+    - options
+    - start over
+    - मेनू
+    - 0
+- intent: set_language
+  examples: |
+    - [hindi]{"entity": "language", "value": "hi"}
+    - [हिंदी]{"entity": "language", "value": "hi"}
+    - hindi me baat karo [hindi]{"entity": "language", "value": "hi"}
+    - [english]{"entity": "language", "value": "en"}
+    - switch to [english]{"entity": "language", "value": "en"}
+- intent: check_jamabandi
+  examples: |
+    - 1
+    - check jamabandi
+    - verify my land record
+    - jamabandi dekhna hai
+    - जमाबंदी जाँच
+    - is the land in my name
+- intent: mutation_status
+  examples: |
+    - 2
+    - mutation status
+    - dakhil kharij status
+    - where is my mutation case
+    - दाखिल खारिज की स्थिति
+    - my mutation is pending
+- intent: lpc_check
+  examples: |
+    - 3
+    - lpc
+    - can I get LPC
+    - land possession certificate
+    - एलपीसी
+    - lpc banwana hai
+- intent: lodge_grievance
+  examples: |
+    - 4
+    - complaint
+    - lodge grievance
+    - I want to complain
+    - शिकायत
+    - shikayat darj karni hai
+- intent: parimarjan_help
+  examples: |
+    - 5
+    - parimarjan
+    - correction in jamabandi
+    - my name is wrong in record
+    - परिमार्जन
+    - galti sudhar
+- intent: ask_assistant
+  examples: |
+    - 6
+    - I have a question
+    - ask a question
+    - help
+    - सवाल पूछना है
+    - prashn

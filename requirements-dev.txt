@@ -1,0 +1,3 @@
+-r requirements-gateway.txt
+pyyaml>=6
+pytest>=8

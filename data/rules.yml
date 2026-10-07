@@ -1,0 +1,114 @@
+version: "3.1"
+rules:
+- rule: Greet and show menu
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - action: utter_main_menu
+
+- rule: Show menu on request
+  steps:
+  - intent: menu
+  - action: utter_main_menu
+
+- rule: Set language
+  steps:
+  - intent: set_language
+  - action: utter_language_set
+  - action: utter_main_menu
+
+- rule: Say goodbye
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- rule: Fallback to menu
+  steps:
+  - intent: nlu_fallback
+  - action: utter_default
+  - action: utter_main_menu
+
+- rule: Parimarjan help
+  steps:
+  - intent: parimarjan_help
+  - action: utter_parimarjan_help
+  - action: utter_main_menu
+
+# --- Forms: activate ---
+- rule: Activate jamabandi form
+  steps:
+  - intent: check_jamabandi
+  - action: jamabandi_form
+  - active_loop: jamabandi_form
+- rule: Activate mutation form
+  steps:
+  - intent: mutation_status
+  - action: mutation_form
+  - active_loop: mutation_form
+- rule: Activate LPC form
+  steps:
+  - intent: lpc_check
+  - action: lpc_form
+  - active_loop: lpc_form
+- rule: Activate grievance form
+  steps:
+  - intent: lodge_grievance
+  - action: grievance_form
+  - active_loop: grievance_form
+- rule: Activate assistant form
+  steps:
+  - intent: ask_assistant
+  - action: assistant_form
+  - active_loop: assistant_form
+
+# --- Forms: submit ---
+- rule: Submit jamabandi form
+  condition:
+  - active_loop: jamabandi_form
+  steps:
+  - action: jamabandi_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_submit_jamabandi
+  - action: utter_main_menu
+- rule: Submit mutation form
+  condition:
+  - active_loop: mutation_form
+  steps:
+  - action: mutation_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_submit_mutation
+  - action: utter_main_menu
+- rule: Submit LPC form
+  condition:
+  - active_loop: lpc_form
+  steps:
+  - action: lpc_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_submit_lpc
+  - action: utter_main_menu
+- rule: Submit grievance form
+  condition:
+  - active_loop: grievance_form
+  steps:
+  - action: grievance_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_submit_grievance
+  - action: utter_main_menu
+- rule: Submit assistant form
+  condition:
+  - active_loop: assistant_form
+  steps:
+  - action: assistant_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_submit_assistant
+  - action: utter_main_menu

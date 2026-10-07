@@ -1,0 +1,19 @@
+# Runs the chatbot stack. PLATFORM_URL must reach the AI-Land-Governance API.
+services:
+  rasa:
+    image: rasa/rasa:3.6.20-full
+    volumes: ["./:/app"]
+    command: ["run", "--enable-api", "--cors", "*"]
+    ports: ["5005:5005"]
+    depends_on: [actions]
+  actions:
+    build: { context: ., dockerfile: Dockerfile.actions }
+    environment:
+      PLATFORM_URL: ${PLATFORM_URL:-http://host.docker.internal:8000}
+    ports: ["5055:5055"]
+  gateway:
+    build: { context: ., dockerfile: Dockerfile.gateway }
+    environment:
+      RASA_URL: http://rasa:5005
+    ports: ["8080:8080"]
+    depends_on: [rasa]
